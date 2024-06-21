@@ -1,0 +1,33 @@
+version: "3.9"
+services:
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: php
+    environment:
+      - APP_ENV=${APP_ENV}
+    ports:
+      - "8000:8000"
+    depends_on:
+      - database
+    volumes:
+      - .:/var/www/html # Mount the current directory to the container
+
+
+  database:
+    image: mysql:8.0
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_DATABASE=${DB_DATABASE}    
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+      - MYSQL_ALLOW_EMPTY_PASSWORD="yes"
+    volumes:
+      - db-data:/var/lib/mysql
+
+volumes:
+  db-data:
+    driver: local
